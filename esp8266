@@ -1,0 +1,77 @@
+#include <ESP8266WiFi.h>
+#include <ESP8266WebServer.h>
+#include <DNSServer.h>
+
+const char *ssid = "Your_SSID";           // SSID of Wi-Fi esp8266 will connect to
+const char *password = "Your_Password";   // Password of Wi-Fi esp8266 will connect to
+
+const int irSensorPin = D1;               // IR sensor input pin
+const int threshold = 800;                // Adjust this threshold based on IR sensor and parking setup
+
+const char *host = "Your_Hostname";       // Hostname for ESP8266
+const int serverPort = 80;                // Port for the web server (HTTP)
+
+bool isParkingOccupied = false;
+
+ESP8266WebServer server(serverPort);
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(irSensorPin, INPUT);
+  
+  // Connect to Wi-Fi
+  WiFi.hostname(host);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Connecting to WiFi...");
+  }
+  Serial.println("Connected to WiFi");
+
+  // Initialize server routes
+  server.on("/", HTTP_GET, handleRoot);
+
+  // Start the server
+  server.begin();
+}
+
+void loop() {
+  // Read IR sensor value
+  int irSensorValue = analogRead(irSensorPin);
+  
+  // Update parking status
+  if (irSensorValue < threshold) {
+    isParkingOccupied = true;
+  } else {
+    isParkingOccupied = false;
+  }
+  
+  delay(1000); // Adjust the delay as needed
+
+  // Handle client requests
+  server.handleClient();
+}
+
+void handleRoot() {
+  // Create an HTML page with JavaScript for live updates
+  String status = (isParkingOccupied) ? "Occupied" : "Vacant";
+  String page = "<!DOCTYPE html><html><head><title>Parking Status</title></head><body>";
+  page += "<h1>Parking Status: " + status + "</h1>";
+  page += "<script>";
+  page += "function updateStatus() {";
+  page += "  var statusElement = document.getElementsByTagName('h1')[0];";
+  page += "  var xhr = new XMLHttpRequest();";
+  page += "  xhr.onreadystatechange = function() {";
+  page += "    if (xhr.readyState === 4 && xhr.status === 200) {";
+  page += "      statusElement.innerHTML = 'Parking Status: ' + xhr.responseText;";
+  page += "    }";
+  page += "  };";
+  page += "  xhr.open('GET', '/status', true);";
+  page += "  xhr.send();";
+  page += "}";
+  page += "setInterval(updateStatus, 5000);"; // Update status every 5 seconds
+  page += "</script>";
+  page += "</body></html>";
+
+  server.send(200, "text/html", page);
+}
