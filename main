@@ -2,3 +2,11 @@
 #includes "includes/client_handler.cpp"
 #includes "includes/webpage"
 #includes "WiFiConnection"
+
+void setup() {
+}
+
+
+void loop() {
+
+}
