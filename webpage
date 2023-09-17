@@ -1,23 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Parking Status</title>
-</head>
-<body>
-  <h1>Parking Status: <span id="status">Vacant</span></h1>
-  <script>
-    function updateStatus() {
-      var statusElement = document.getElementById('status');
-      var xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          statusElement.innerHTML = 'Parking Status: ' + xhr.responseText;
-        }
-      };
-      xhr.open('GET', '/status', true);
-      xhr.send();
-    }
-    setInterval(updateStatus, 5000); // Update status every 5 seconds
-  </script>
-</body>
-</html>
+void handleRoot() {
+  // Create an HTML page with JavaScript for live updates
+  String status = (isParkingOccupied) ? "Occupied" : "Vacant";
+  String page = "<!DOCTYPE html><html><head><title>Parking Status</title></head><body>";
+  page += "<h1>Parking Status: " + status + "</h1>";
+  page += "<script>";
+  page += "function updateStatus() {";
+  page += "  var statusElement = document.getElementsByTagName('h1')[0];";
+  page += "  var xhr = new XMLHttpRequest();";
+  page += "  xhr.onreadystatechange = function() {";
+  page += "    if (xhr.readyState === 4 && xhr.status === 200) {";
+  page += "      statusElement.innerHTML = 'Parking Status: ' + xhr.responseText;";
+  page += "    }";
+  page += "  };";
+  page += "  xhr.open('GET', '/status', true);";
+  page += "  xhr.send();";
+  page += "}";
+  page += "setInterval(updateStatus, 5000);"; // Update status every 5 seconds
+  page += "</script>";
+  page += "</body></html>";
+
+  server.send(200, "text/html", page);
+}
