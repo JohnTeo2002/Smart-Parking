@@ -38,11 +38,17 @@ void connectToWiFi() {
 /*
  * call connectToWifi() in setup()
  */
+
+/*
 void setup(){
  Serial.begin(115200);
  connectToWiFi();
 }
+*/
 
+/*
 void loop(){
  //...other setup code here...
 }
+*/
+
