@@ -22,7 +22,7 @@ void connectToWiFi() {
    delay(500);
    Serial.print(".");
   }
-  if (retries > 14) {
+  if (retries > 10000000) {
     Serial.println(F("WiFi connection FAILED"));
   }
   if (WiFi.status() == WL_CONNECTED) {
