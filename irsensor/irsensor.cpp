@@ -5,13 +5,15 @@ const int threshold = 800;                // Adjust this threshold based on IR s
 
 bool isParkingOccupied = false;
 
+/*
 void setup() {
   Serial.begin(115200);
   pinMode(irSensorPin, INPUT);
 }
+*/
 
-void loop() {
-  // Read IR sensor value
+void irsensor() {
+   // Read IR sensor value
   int irSensorValue = analogRead(irSensorPin);
   
   // Update parking status
@@ -23,3 +25,9 @@ void loop() {
   
   delay(1000); // Adjust the delay as needed
 }
+
+/*
+void loop() {
+  irsensor()
+}
+*/
